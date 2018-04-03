@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<!-- Custom elements -->
+<link rel="import" href="filter-view.html">
+
+<dom-module id="poc-dialog">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-dialog > *{
+        margin:0px;
+        padding:0px;
+      }
+    </style>
+
+    <paper-toolbar>
+      <paper-icon-button slot="top" icon="menu"></paper-icon-button>
+      <span slot="top" class="title">Sample filter dialog</span>
+    </paper-toolbar>
+
+    <paper-button on-tap="_openDialog" raised>Open filter dialog</paper-button>
+
+    <paper-dialog id="dialog" with-backdrop>
+      <filter-view></filter-view>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class PocDialog extends Polymer.Element {
+      static get is() {
+        return 'poc-dialog';
+      }
+
+      _openDialog() {
+        this.$.dialog.open();
+      }
+    }
+
+    window.customElements.define(PocDialog.is, PocDialog);
+  </script>
+</dom-module>

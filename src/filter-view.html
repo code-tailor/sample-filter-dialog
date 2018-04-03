@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+
+<!-- Layout elements -->
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<!-- Custom elements -->
+<link rel="import" href="filter-content-view.html">
+<link rel="import" href="filter-criteria-view.html">
+
+
+<dom-module id="filter-view">
+  <template>
+    <style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning">
+      :host {
+        display: block;
+        width: 600px;
+        height: 500px;
+        background-color: var(--light-theme-background-color);
+        overflow: hidden;
+        @apply --layout-horizontal;
+      }
+
+      filter-criteria-view{
+        width:160px;
+      }
+
+      filter-content-view{
+        overflow: auto;
+      }
+    </style>
+
+    <filter-criteria-view class="" criteria="{{_criteria}}"></filter-criteria-view>
+
+    <filter-content-view filter-criteria="[[_criteria]]" class="flex"></filter-content-view>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class FilterView extends Polymer.Element {
+      static get is() {
+        return 'filter-view';
+      }
+      static get properties() {
+        return {
+          _criteria: String
+        };
+      }
+    }
+
+    window.customElements.define(FilterView.is, FilterView);
+  </script>
+</dom-module>

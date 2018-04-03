@@ -1,0 +1,150 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/polymer/lib/legacy/legacy-element-mixin.html">
+
+<dom-module id="filter-criteria-view">
+  <template>
+    <style include="iron-flex-alignment iron-flex">
+      :host {
+        display: block;
+        overflow: auto;
+        height: 100%;
+        --paper-item: {
+          cursor: pointer;
+        };
+      }
+
+      #sideArrow {
+        --iron-icon-width: 15px;
+        --iron-icon-height: 15px;
+      }
+
+      .criteria-item {
+        padding-left: 30px;
+      }
+      
+      .toggle #sideArrow,
+      #downArrow{
+        display: none;
+      }
+      
+      .toggle #downArrow{
+        display: block;
+      }
+    </style>
+
+    <template is="dom-repeat" items="[[_data]]">
+      <div class="filter-criteria-wrapper">
+        <paper-item on-tap="_onCategoryTap">
+          [[item.label]]
+          <iron-icon icon="icons:arrow-drop-down" id="downArrow"></iron-icon>
+          <iron-icon icon="av:play-arrow" id="sideArrow"></iron-icon>
+        </paper-item>
+
+        <iron-collapse>
+          <paper-listbox attr-for-selected="name">
+            <template is="dom-repeat" items="[[item.data]]">
+              <paper-item class="criteria-item" name="[[item.name]]" on-tap="_onCriteriaSelect">[[item.name]]</paper-item>
+            </template>
+          </paper-listbox>
+        </iron-collapse>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    class FilterCriteriaView extends Polymer.mixinBehaviors([Polymer.ElementMixin], Polymer.Element) {
+      static get is() {
+        return 'filter-criteria-view';
+      }
+
+      static get properties() {
+        return {
+
+          /**
+           * Output property
+           * Selected Filter criteria
+           */
+          criteria: {
+            type: String,
+            notify: true
+          },
+
+          _criteriaData: {
+            type: Object,
+            observer: '_onCriteriaDataChange',
+            value: function () {
+              return {
+                "completed": [{
+                  "id": "id1",
+                  "name": "Routing"
+                },{
+                  "id": "id2",
+                  "name": "Proxy"
+                }],
+                "current": [{
+                  "id": "id3",
+                  "name": "Barn Rats"
+                }, {
+                  "id": "id3",
+                  "name": "Mysterious Key"
+                }]
+              }
+            }
+          },
+
+          _data: {
+            type: Array
+          }
+        }
+      }
+
+      _onCriteriaDataChange() {
+        var keys = Object.keys(this._criteriaData);
+        var data = [];
+
+        keys.forEach((key) => {
+          var obj = {
+            label: key,
+            data: this._criteriaData[key]
+          };
+          data.push(obj);
+        });
+
+        this.set('_data', data);
+      }
+
+      _onCategoryTap(e) {
+        var parentEl = e.currentTarget.parentElement;
+        var elCollapse = parentEl.querySelector('iron-collapse');
+
+        elCollapse.toggle();
+        this.toggleClass('toggle', elCollapse.opened ,parentEl);
+      }
+
+      _onCriteriaSelect(e) {
+        setTimeout(() => {
+          var names = [];
+          var elListboxes = this.shadowRoot.querySelectorAll('paper-listbox');
+          
+          elListboxes.forEach((el)  => {
+            if(el.selected){
+              names.push(el.selected);
+            }
+          });
+        
+          this.set('criteria', names.join(', '));
+        }, 10); 
+      }
+    }
+    window.customElements.define(FilterCriteriaView.is, FilterCriteriaView);
+  </script>
+</dom-module>
